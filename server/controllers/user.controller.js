@@ -109,16 +109,19 @@ export const updateProfile = async (req, res) => {
         .json({ success: false, message: "User not found" });
     }
 
-    // Extract public ID of the old image from the URL if it exists
-    if (user.photoUrl) {
-      const publicId = user.photoUrl.split("/").pop().split(".")[0]; // Extracts the public ID
-      await deleteMediaFromCloudinary(publicId);
-    }
+    let photoUrl = user.photoUrl;
 
-    // Upload new image to Cloudinary
-    const cloudRes = await uploadMedia(profilePhoto.path);
-    const {secure_url:photoUrl} = cloudRes;
-    
+    if (profilePhoto) {
+      // Extract public ID of the old image from the URL if it exists
+      if (user.photoUrl) {
+        const publicId = user.photoUrl.split("/").pop().split(".")[0]; // Extracts the public ID
+        await deleteMediaFromCloudinary(publicId);
+      }
+
+      // Upload new image to Cloudinary
+      const cloudRes = await uploadMedia(profilePhoto.path);
+      photoUrl = cloudRes.secure_url;
+    }
 
     // Update the user data
     const updatedData = { name, photoUrl };

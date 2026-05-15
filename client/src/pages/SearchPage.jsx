@@ -3,7 +3,7 @@ import Filter from "./Filter";
 import SearchResult from "./SearchResult";
 import { Link, useSearchParams } from "react-router-dom";
 import { Skeleton } from "../components/ui/skeleton";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, SearchX } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { useGetSearchedCoursesQuery } from "@/api/courseApi";
 
@@ -33,25 +33,27 @@ const SearchPage = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-8">
-      <div className="my-6">
-        <h1 className="font-bold text-xl md:text-2xl">
-          {data?.courses?.length || 0} results for “{query}”
+      {/* Modern Header */}
+      <div className="mb-8 p-8 rounded-3xl bg-primary/5 border border-primary/10">
+        <h1 className="font-extrabold text-3xl md:text-4xl text-foreground mb-2">
+          Search Results
         </h1>
-        <p>
-          Showing results for{" "}
-          <span className="text-blue-800 font-bold italic">{query}</span>{" "}
+        <p className="text-muted-foreground text-lg">
+          Found <span className="font-bold text-foreground">{data?.courses?.length || 0}</span> courses for{" "}
+          <span className="text-primary font-bold">"{query}"</span>
         </p>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-10">
+      <div className="flex flex-col lg:flex-row gap-10">
         <Filter onFilterChange={handleFilterChange} />
+        
         <div className="flex-1">
           {isLoading ? (
-            Array.from({ length: 3 }).map((_, index) => (
+            Array.from({ length: 4 }).map((_, index) => (
               <CourseCardSkeleton key={index} />
             ))
           ) : isEmpty ? (
-            <CourseNotFound />
+            <CourseNotFound query={query} />
           ) : (
             data?.courses?.map((course) => (
               <SearchResult key={course._id} course={course} />
@@ -65,18 +67,20 @@ const SearchPage = () => {
 
 export default SearchPage;
 
-const CourseNotFound = () => {
+const CourseNotFound = ({ query }) => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-32 dark:bg-gray-900 p-6">
-      <AlertCircle className="text-red-500 h-16 w-16 mb-4" />
-      <h1 className="font-bold text-2xl md:text-4xl text-gray-800 dark:text-gray-200 mb-2">
-        Course Not Found
+    <div className="flex flex-col items-center justify-center min-h-[40vh] bg-card border border-border rounded-2xl shadow-sm p-12 text-center">
+      <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mb-6">
+        <SearchX className="text-muted-foreground h-10 w-10" />
+      </div>
+      <h1 className="font-extrabold text-2xl md:text-3xl text-foreground mb-3">
+        No courses found
       </h1>
-      <p className="text-lg text-gray-600 dark:text-gray-400 mb-4">
-        Sorry, we couldn't find the course you're looking for.
+      <p className="text-lg text-muted-foreground max-w-md mx-auto mb-8">
+        We couldn't find any courses matching <span className="font-semibold text-foreground">"{query}"</span>. Try adjusting your filters or searching for something else.
       </p>
-      <Link to="/" className="italic">
-        <Button variant="link">Browse All Courses</Button>
+      <Link to="/course/search?query">
+        <Button size="lg" className="font-bold rounded-full px-8">Browse All Courses</Button>
       </Link>
     </div>
   );
@@ -84,22 +88,25 @@ const CourseNotFound = () => {
 
 const CourseCardSkeleton = () => {
   return (
-    <div className="flex-1 flex flex-col md:flex-row justify-between border-b border-gray-300 py-4">
-      <div className="h-32 w-full md:w-64">
-        <Skeleton className="h-full w-full object-cover" />
-      </div>
-
-      <div className="flex flex-col gap-2 flex-1 px-4">
-        <Skeleton className="h-6 w-3/4" />
-        <Skeleton className="h-4 w-1/2" />
-        <div className="flex items-center gap-2">
-          <Skeleton className="h-4 w-1/3" />
+    <div className="flex flex-col md:flex-row justify-between items-start md:items-center bg-card border border-border rounded-2xl p-4 gap-6 shadow-sm mb-4">
+      <div className="flex flex-col md:flex-row gap-6 w-full md:w-auto">
+        <Skeleton className="h-40 w-full md:w-64 rounded-xl flex-shrink-0" />
+        
+        <div className="flex flex-col gap-3 py-2 w-full md:w-[400px]">
+          <Skeleton className="h-6 w-24 rounded-full" />
+          <Skeleton className="h-8 w-full" />
+          <Skeleton className="h-4 w-3/4" />
+          
+          <div className="mt-auto pt-4 flex items-center gap-2">
+            <Skeleton className="h-4 w-8" />
+            <Skeleton className="h-4 w-32" />
+          </div>
         </div>
-        <Skeleton className="h-6 w-20 mt-2" />
       </div>
-
-      <div className="flex flex-col items-end justify-between mt-4 md:mt-0">
-        <Skeleton className="h-6 w-12" />
+      
+      <div className="mt-4 md:mt-0 md:text-right w-full md:w-auto flex flex-col items-end justify-center">
+        <Skeleton className="h-4 w-12 mb-2 hidden md:block" />
+        <Skeleton className="h-8 w-24" />
       </div>
     </div>
   );

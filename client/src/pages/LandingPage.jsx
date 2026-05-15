@@ -23,46 +23,82 @@ const LandingPage = () => {
   return (
     <div className="flex flex-col w-full bg-background">
       {/* 1. HERO SECTION */}
-      <section className="relative overflow-hidden bg-[#0f0c29] text-white py-24 md:py-36 px-6">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full bg-purple-600/20 blur-[120px] animate-pulse" />
-          <div className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full bg-indigo-500/10 blur-[100px] animate-pulse" />
+      <section className="relative overflow-hidden bg-background dark:bg-[#0A0A0A] text-foreground dark:text-white py-12 md:py-20 px-6 transition-colors duration-300 border-b border-border">
+        {/* Subtle background glow */}
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-[-20%] left-[20%] w-[500px] h-[500px] rounded-full bg-primary/10 dark:bg-primary/20 blur-[120px]" />
+          <div className="absolute bottom-[-20%] right-[10%] w-[600px] h-[600px] rounded-full bg-indigo-500/5 dark:bg-indigo-500/10 blur-[120px]" />
         </div>
+
         <div className="relative z-10 max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12">
           <div className="flex-1 text-center lg:text-left space-y-8">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-sm font-medium">
-              <span className="w-2 h-2 rounded-full bg-purple-400 animate-ping" />
-              Over 10,000+ students already joined
+            {/* Top Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/20 bg-primary/5 text-primary text-sm font-semibold shadow-sm mx-auto lg:mx-0">
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+              Trusted by 10,000+ students worldwide
             </div>
-            <h1 className="text-5xl md:text-7xl font-extrabold leading-tight">
-              Learn In-Demand Skills From <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-400">Industry Experts</span>
+            
+            {/* Main Heading */}
+            <h1 className="text-5xl md:text-6xl font-['Caveat',cursive] font-bold tracking-tight leading-[1.1]">
+              Master In-Demand <br className="hidden md:block" />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-indigo-500">Skills For The Future</span>
             </h1>
-            <p className="text-gray-400 text-lg md:text-xl max-w-2xl">
-              Unlock your potential with expert-led courses, hands-on projects, and a community that supports your growth every step of the way.
+            
+            {/* Subtitle */}
+            <p className="text-base md:text-lg text-muted-foreground dark:text-gray-400 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+              Unlock your potential with premium expert-led courses, hands-on projects, and a global community dedicated to your growth.
             </p>
-            <form onSubmit={onSearch} className="flex items-center bg-white/10 backdrop-blur-md border border-white/20 rounded-full p-1 max-w-xl mx-auto lg:mx-0 shadow-2xl">
-              <Search className="ml-4 text-gray-400" size={20} />
-              <input 
-                type="text" 
-                value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
-                placeholder="Search for courses (e.g. React, Python...)"
-                className="flex-grow bg-transparent border-none focus:outline-none px-4 py-3 text-white placeholder:text-gray-500"
-              />
-              <Button type="submit" className="rounded-full bg-purple-600 hover:bg-purple-700 px-8 py-6">Search</Button>
+            
+            {/* Search Bar */}
+            <form onSubmit={onSearch} className="flex flex-col sm:flex-row items-center gap-3 w-full max-w-lg mx-auto lg:mx-0">
+              <div className="relative w-full flex-grow group">
+                <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-muted-foreground group-focus-within:text-primary transition-colors">
+                  <Search size={18} />
+                </div>
+                <input 
+                  type="text" 
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  placeholder="What do you want to learn today?"
+                  className="w-full h-12 pl-12 pr-4 rounded-xl bg-card border border-border shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-foreground dark:text-white placeholder:text-muted-foreground font-medium text-base"
+                />
+              </div>
+              <Button type="submit" size="lg" className="h-12 px-6 rounded-xl w-full sm:w-auto font-bold text-base shadow-md hover:shadow-lg transition-all">
+                Search
+              </Button>
             </form>
-            <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
-              <Button onClick={() => navigate('/course/search?query')} className="rounded-full px-8 py-6 bg-white text-purple-900 hover:bg-gray-100 font-bold">Start Learning</Button>
-              <Button variant="outline" className="rounded-full px-8 py-6 border-white/20 text-white hover:bg-white/10 font-bold">Explore Courses</Button>
+            
+            {/* Action Buttons */}
+            <div className="flex flex-wrap gap-4 justify-center lg:justify-start pt-1">
+              <Button onClick={() => navigate('/course/search?query')} size="lg" variant="outline" className="h-12 px-6 rounded-xl border-border text-foreground hover:bg-muted font-semibold shadow-sm transition-all">
+                Explore All Courses
+              </Button>
             </div>
           </div>
-          <div className="flex-1 hidden lg:block relative">
-            <div className="absolute -inset-4 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-3xl blur-2xl opacity-20 animate-pulse" />
-            <img 
-              src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-              alt="Dashboard Preview" 
-              className="relative rounded-3xl shadow-2xl border border-white/10"
-            />
+          
+          {/* Right Image */}
+          <div className="flex-1 hidden lg:block relative w-full max-w-lg mx-auto">
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-border/50 bg-card transform hover:-translate-y-2 transition-transform duration-500">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent z-10" />
+              <img 
+                src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+                alt="Students learning together" 
+                className="w-full h-[450px] object-cover"
+              />
+              <div className="absolute bottom-8 left-8 right-8 z-20">
+                <div className="bg-background/90 backdrop-blur-md p-6 rounded-2xl border border-border/50 shadow-xl">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+                      <Award size={24} />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-foreground">Industry Certified</h3>
+                      <p className="text-sm text-muted-foreground">Learn from top tech companies</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -220,10 +256,10 @@ const LandingPage = () => {
       </section>
 
       {/* 8. TESTIMONIALS */}
-      <section className="py-24 px-6 bg-[#0f0c29] text-white">
+      <section className="py-24 px-6 bg-muted/50 dark:bg-[#0f0c29] text-foreground dark:text-white transition-colors duration-300">
         <div className="max-w-7xl mx-auto text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">What Our Students Say</h2>
-          <p className="text-gray-400">Join thousands of successful students worldwide.</p>
+          <p className="text-muted-foreground dark:text-gray-400">Join thousands of successful students worldwide.</p>
         </div>
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
@@ -231,16 +267,16 @@ const LandingPage = () => {
             { name: 'Priya Sharma', role: 'Data Analyst', text: 'High quality content and amazing support. The certificates really helped me in my career.', img: 'https://i.pravatar.cc/150?u=priya' },
             { name: 'James Doe', role: 'Designer', text: 'Best platform for learning modern design. The mentors are top-notch and the community is great.', img: 'https://i.pravatar.cc/150?u=james' },
           ].map((tes) => (
-            <div key={tes.name} className="p-8 rounded-2xl bg-white/5 border border-white/10 flex flex-col gap-6">
+            <div key={tes.name} className="p-8 rounded-2xl bg-background dark:bg-white/5 border border-border dark:border-white/10 flex flex-col gap-6 shadow-sm">
               <div className="flex gap-1 text-yellow-400">
                 {[...Array(5)].map((_, i) => <Star key={i} size={16} fill="currentColor" />)}
               </div>
-              <p className="italic text-gray-300">"{tes.text}"</p>
+              <p className="italic text-foreground/80 dark:text-gray-300">"{tes.text}"</p>
                 <div className="flex items-center gap-4 mt-auto">
                   <img src={tes.img} alt={tes.name} className="w-12 h-12 rounded-full object-cover" />
                   <div>
                     <h4 className="font-bold">{tes.name}</h4>
-                    <p className="text-xs text-gray-500">{tes.role}</p>
+                    <p className="text-xs text-muted-foreground dark:text-gray-500">{tes.role}</p>
                   </div>
                 </div>
               </div>
@@ -359,7 +395,7 @@ const LandingPage = () => {
       </section>
 
       {/* 13. CTA BANNER */}
-      <section className="pt-20 pb-0 px-6 bg-[#0f0c29]">
+      <section className="pt-20 pb-0 px-6 bg-background dark:bg-[#0f0c29] transition-colors duration-300">
         <div className="max-w-7xl mx-auto rounded-t-[3rem] rounded-b-none bg-gradient-to-r from-purple-600 to-indigo-700 p-12 md:p-24 text-center text-white relative overflow-hidden shadow-2xl">
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
           <div className="relative z-10 space-y-8">
