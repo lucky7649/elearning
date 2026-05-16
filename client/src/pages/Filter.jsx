@@ -52,7 +52,7 @@ const Filter = ({ onFilterChange }) => {
   };
 
   return (
-    <div className="w-full md:w-[25%] p-6 bg-card border border-border rounded-2xl shadow-sm h-fit">
+    <div className="w-full lg:w-64 xl:w-72 p-5 bg-card border border-border rounded-2xl shadow-sm h-fit shrink-0">
       <div className="flex items-center justify-between mb-4">
         <h1 className="font-extrabold text-lg md:text-xl">Filters</h1>
         {(selectedCategories.length > 0 || sortByPrice) && (

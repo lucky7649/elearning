@@ -32,19 +32,19 @@ const SearchPage = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-4 md:p-8">
-      {/* Modern Header */}
-      <div className="mb-8 p-8 rounded-3xl bg-primary/5 border border-primary/10">
-        <h1 className="font-extrabold text-3xl md:text-4xl text-foreground mb-2">
+    <div className="max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-8">
+      {/* Header */}
+      <div className="mb-6 p-5 md:p-8 rounded-2xl bg-primary/5 border border-primary/10">
+        <h1 className="font-extrabold text-2xl md:text-4xl text-foreground mb-1">
           Search Results
         </h1>
-        <p className="text-muted-foreground text-lg">
+        <p className="text-muted-foreground text-sm md:text-base">
           Found <span className="font-bold text-foreground">{data?.courses?.length || 0}</span> courses for{" "}
           <span className="text-primary font-bold">"{query}"</span>
         </p>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-10">
+      <div className="flex flex-col lg:flex-row gap-6 lg:gap-10">
         <Filter onFilterChange={handleFilterChange} />
         
         <div className="flex-1">

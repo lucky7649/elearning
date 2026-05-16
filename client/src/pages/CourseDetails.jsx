@@ -54,21 +54,21 @@ const CourseDetails = () => {
     <div className="flex flex-col min-h-screen bg-background text-foreground mb-20">
       {/* PREMIUM HEADER */}
       <div className="bg-[#0f0c29] text-white w-full border-b border-white/10">
-        <div className="max-w-7xl mx-auto py-16 px-6 lg:px-8 flex flex-col gap-6">
-          <div className="space-y-4 max-w-3xl">
-            <h1 className="font-extrabold text-4xl md:text-5xl leading-tight">
+        <div className="max-w-7xl mx-auto py-10 md:py-16 px-4 md:px-8 flex flex-col gap-6">
+          <div className="space-y-3 max-w-3xl">
+            <h1 className="font-extrabold text-2xl md:text-4xl lg:text-5xl leading-tight">
               {course?.courseTitle}
             </h1>
-            <p className="text-gray-300 text-lg md:text-xl font-medium">
+            <p className="text-gray-300 text-base md:text-lg font-medium">
               {course?.subTitle}
             </p>
-            <div className="flex flex-wrap items-center gap-6 text-sm text-gray-400 mt-6">
-              <p className="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-full border border-white/10">
+            <div className="flex flex-wrap items-center gap-3 text-sm text-gray-400 mt-4">
+              <p className="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-full border border-white/10 text-xs md:text-sm">
                 Created By <span className="font-bold text-white">{course?.creator?.name}</span>
               </p>
               <div className="flex items-center gap-2">
-                <BadgeInfo size={18} className="text-purple-400" />
-                <span>Last updated {course?.createdAt?.split("T")[0]}</span>
+                <BadgeInfo size={16} className="text-purple-400" />
+                <span className="text-xs md:text-sm">Last updated {course?.createdAt?.split("T")[0]}</span>
               </div>
             </div>
           </div>
@@ -76,7 +76,7 @@ const CourseDetails = () => {
       </div>
 
       {/* MAIN CONTENT */}
-      <div className="max-w-7xl mx-auto w-full px-6 lg:px-8 mt-12 flex flex-col lg:flex-row gap-12 relative">
+      <div className="max-w-7xl mx-auto w-full px-4 md:px-8 mt-6 md:mt-12 flex flex-col lg:flex-row gap-8 lg:gap-12 relative pb-16">
         
         {/* LEFT COLUMN: COURSE DETAILS */}
         <div className="w-full lg:w-2/3 space-y-10">
@@ -140,7 +140,7 @@ const CourseDetails = () => {
 
         {/* RIGHT COLUMN: PURCHASE WIDGET */}
         <div className="w-full lg:w-1/3">
-          <div className="sticky top-10">
+          <div className="lg:sticky lg:top-10">
             <Card className="overflow-hidden border-border rounded-3xl shadow-xl shadow-primary/5">
               <CardContent className="p-0">
                 
@@ -175,8 +175,8 @@ const CourseDetails = () => {
                   )}
                 </div>
 
-                <div className="p-8">
-                  <h2 className="font-extrabold text-4xl text-foreground mb-6">
+                <div className="p-5 md:p-8">
+                  <h2 className="font-extrabold text-3xl md:text-4xl text-foreground mb-4 md:mb-6">
                     {course?.coursePrice === 0 ? "Free" : `₹${course?.coursePrice}`}
                   </h2>
 

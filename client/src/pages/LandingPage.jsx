@@ -103,17 +103,29 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* 2. TRUSTED BY SECTION */}
-      <section className="py-12 bg-gray-50 dark:bg-black border-y border-border">
+      {/* 2. TRUSTED BY SECTION (MARQUEE) */}
+      <section className="py-12 bg-gray-50 dark:bg-black border-y border-border overflow-hidden">
         <div className="max-w-7xl mx-auto px-6">
-          <p className="text-center text-sm font-semibold text-muted-foreground uppercase tracking-widest mb-8">Trusted by industry leaders worldwide</p>
-          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-50 grayscale hover:grayscale-0 transition-all">
-            <span className="text-2xl font-bold">Google</span>
-            <span className="text-2xl font-bold">Microsoft</span>
-            <span className="text-2xl font-bold">AWS</span>
-            <span className="text-2xl font-bold">Meta</span>
-            <span className="text-2xl font-bold">Stanford</span>
-            <span className="text-2xl font-bold">IIT Bombay</span>
+          <p className="text-center text-sm font-semibold text-muted-foreground uppercase tracking-widest mb-10">Trusted by industry leaders worldwide</p>
+          
+          <div className="relative">
+            {/* Gradient Mask for fading edges */}
+            <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-gray-50 dark:from-black to-transparent z-10" />
+            <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-gray-50 dark:from-black to-transparent z-10" />
+
+            <div className="flex animate-marquee whitespace-nowrap gap-12 md:gap-24 opacity-50 grayscale hover:grayscale-0 transition-all items-center">
+              {[
+                "Google", "Microsoft", "AWS", "Meta", "Stanford", "IIT Bombay", "Udemy", "Coursera", "LinkedIn", "Harvard"
+              ].map((brand, i) => (
+                <span key={i} className="text-2xl md:text-3xl font-bold tracking-tight">{brand}</span>
+              ))}
+              {/* Duplicate for seamless loop */}
+              {[
+                "Google", "Microsoft", "AWS", "Meta", "Stanford", "IIT Bombay", "Udemy", "Coursera", "LinkedIn", "Harvard"
+              ].map((brand, i) => (
+                <span key={`dup-${i}`} className="text-2xl md:text-3xl font-bold tracking-tight">{brand}</span>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -194,7 +206,7 @@ const LandingPage = () => {
           <div className="bg-primary/5 rounded-3xl p-8 relative overflow-hidden">
             <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Why us" className="rounded-2xl shadow-xl border border-primary/10" />
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-              <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center text-white shadow-2xl cursor-pointer hover:scale-110 transition-transform">
+              <div className="w-20 h-20 rounded-full bg-primary flex items-center justify-center text-primary-foreground shadow-2xl cursor-pointer hover:scale-110 transition-transform">
                 <PlayCircle size={40} />
               </div>
             </div>
@@ -218,7 +230,7 @@ const LandingPage = () => {
               { step: '04', title: 'Get Certificate', desc: 'Earn your recognized achievement.' },
             ].map((item) => (
               <div key={item.step} className="relative z-10 text-center space-y-4">
-                <div className="w-16 h-16 rounded-full bg-primary text-white flex items-center justify-center mx-auto text-xl font-bold shadow-xl border-4 border-background">
+                <div className="w-16 h-16 rounded-full bg-primary text-primary-foreground flex items-center justify-center mx-auto text-xl font-bold shadow-xl border-4 border-background">
                   {item.step}
                 </div>
                 <h3 className="font-bold text-lg">{item.title}</h3>

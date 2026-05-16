@@ -22,6 +22,9 @@ import EditLecture from "./admin/lecture/EditLecture";
 import PurchaseCourseProtectedRoute from "./components/PurchaseCourseProtectedRoute";
 import Checkout from "./pages/Checkout";
 import { ThemeProvider } from "./components/ThemeProvider";
+import About from "./pages/About";
+import Careers from "./pages/Careers";
+import Contact from "./pages/Contact";
 
 const appRouter = createBrowserRouter([
   {
@@ -35,6 +38,18 @@ const appRouter = createBrowserRouter([
             <LandingPage />
           </>
         ),
+      },
+      {
+        path: "about",
+        element: <About />,
+      },
+      {
+        path: "careers",
+        element: <Careers />,
+      },
+      {
+        path: "contact",
+        element: <Contact />,
       },
       {
         path: "login",
