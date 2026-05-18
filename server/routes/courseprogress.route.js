@@ -1,4 +1,4 @@
-import express from "express"
+import express from "express";
 import isAuthenticated from "../middlewares/auth.js";
 import {getCourseProgress, markAsCompleted, markAsInCompleted, updateLectureProgress, submitQuiz } from "../controllers/courseprogress.controller.js";
 

@@ -202,6 +202,7 @@ const CourseDetails = () => {
                   ) : (
                     <BuyCourseButton
                       courseId={courseId}
+                      course={course}
                       onSuccess={() => setLocalPurchased(true)}
                     />
                   )}

@@ -20,7 +20,6 @@ import Login from "./pages/Login";
 import CreateLecture from "./admin/lecture/CreateLecture";
 import EditLecture from "./admin/lecture/EditLecture";
 import PurchaseCourseProtectedRoute from "./components/PurchaseCourseProtectedRoute";
-import Checkout from "./pages/Checkout";
 import { ThemeProvider } from "./components/ThemeProvider";
 import About from "./pages/About";
 import Careers from "./pages/Careers";
@@ -83,14 +82,7 @@ const appRouter = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
-      {
-        path: "checkout/:courseId",
-        element: (
-          <ProtectedRoute>
-            <Checkout />
-          </ProtectedRoute>
-        ),
-      },
+
       {
         path: "course-progress/:courseId",
         element: (
