@@ -52,7 +52,7 @@ app.get("*", (req, res) => {
   res.sendFile(path.resolve(DIRNAME, "client", "dist", "index.html"));
 });
 
-/* ---------------- START SERVER lucky---------------- */
+/* ---------------- START SERVER ---------------- */
 
 app.listen(PORT, () => {
   connectDB();

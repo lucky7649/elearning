@@ -36,7 +36,9 @@ const CourseTable = () => {
     isLoading,
     isFetching,
     isError,
-  } = useGetCreatorCoursesQuery();
+  } = useGetCreatorCoursesQuery(undefined, {
+    pollingInterval: 5000,
+  });
 
   const courses = data?.courses || [];
 
@@ -78,6 +80,7 @@ const CourseTable = () => {
             <TableHead className="w-1/2">Title</TableHead>
             <TableHead className="w-1/4">Price</TableHead>
             <TableHead className="w-1/4">Status</TableHead>
+            <TableHead className="w-1/4">Live Watching</TableHead>
             <TableHead className="w-1/4 text-right">Action</TableHead>
           </TableRow>
         </TableHeader>
@@ -98,6 +101,18 @@ const CourseTable = () => {
 
                 <TableCell>
                   <StatusBadge isPublished={course.isPublished} />
+                </TableCell>
+
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                    </span>
+                    <span className="font-semibold text-sm">
+                      {course.liveWatching || 0}
+                    </span>
+                  </div>
                 </TableCell>
 
                 <TableCell className="text-right">
@@ -124,7 +139,7 @@ export default CourseTable;
 /* ---------------- EMPTY STATE ---------------- */
 const EmptyState = () => (
   <TableRow>
-    <TableCell colSpan={4} className="text-center text-gray-500">
+    <TableCell colSpan={5} className="text-center text-gray-500">
       No courses found. Start by creating one 🚀
     </TableCell>
   </TableRow>
@@ -136,6 +151,7 @@ const CourseTableSkeleton = () => {
     <TableBody>
       {Array.from({ length: 5 }).map((_, index) => (
         <TableRow key={index} className="animate-pulse">
+          <TableCell className="h-6 bg-gray-200 rounded" />
           <TableCell className="h-6 bg-gray-200 rounded" />
           <TableCell className="h-6 bg-gray-200 rounded" />
           <TableCell className="h-6 bg-gray-200 rounded" />

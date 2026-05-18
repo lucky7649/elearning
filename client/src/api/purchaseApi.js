@@ -74,6 +74,25 @@ export const purchaseApi = createApi({
             ]
           : [{ type: "PurchasedCourses", id: "LIST" }],
     }),
+
+    createRazorpayOrder: builder.mutation({
+      query: ({ courseId }) => ({
+        url: "/razorpay/order",
+        method: "POST",
+        body: { courseId },
+      }),
+    }),
+
+    verifyRazorpayPayment: builder.mutation({
+      query: ({ razorpay_order_id, razorpay_payment_id, razorpay_signature, courseId }) => ({
+        url: "/razorpay/verify",
+        method: "POST",
+        body: { razorpay_order_id, razorpay_payment_id, razorpay_signature, courseId },
+      }),
+      invalidatesTags: (result, error, { courseId }) => [
+        { type: "CourseStatus", id: courseId },
+      ],
+    }),
   }),
 });
 
@@ -81,4 +100,6 @@ export const {
   usePurchaseCourseMutation,
   useGetCourseDetailsWithStatusQuery,
   useGetPurchasedCoursesQuery,
+  useCreateRazorpayOrderMutation,
+  useVerifyRazorpayPaymentMutation,
 } = purchaseApi;

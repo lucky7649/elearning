@@ -33,6 +33,7 @@ const Footer = () => {
         <div>
           <h4 className="text-white font-bold mb-4">Quick Links</h4>
           <ul className="space-y-3 text-sm">
+            <li><Link to="/" className="hover:text-purple-400 transition-colors">Home</Link></li>
             <li><Link to="/about" className="hover:text-purple-400 transition-colors">About Us</Link></li>
             <li><Link to="/course/search?query" className="hover:text-purple-400 transition-colors">Our Courses</Link></li>
             <li><Link to="/careers" className="hover:text-purple-400 transition-colors">Careers</Link></li>
@@ -56,15 +57,15 @@ const Footer = () => {
           <h4 className="text-white font-bold mb-4">Contact Us</h4>
           <div className="flex items-center gap-3">
             <Mail size={15} className="text-purple-500 shrink-0" />
-            <span>support@elearning.com</span>
+            <span>lucky@luckypaswan.in</span>
           </div>
           <div className="flex items-center gap-3">
             <Phone size={15} className="text-purple-500 shrink-0" />
-            <span>+1 (234) 567-890</span>
+            <span>+91 76490 37840</span>
           </div>
           <div className="flex items-center gap-3">
             <MapPin size={15} className="text-purple-500 shrink-0" />
-            <span>123 Learning Way, EdTech City</span>
+            <span>Bhopal, MP, India</span>
           </div>
           <div className="flex gap-4 pt-2">
             <a href="#" className="hover:text-purple-400 transition-colors"><Facebook size={18} /></a>

@@ -153,9 +153,9 @@ export default Navbar;
 
 /* NAV LINKS (desktop) */
 const NAV_ITEMS = [
-  { label: "About Us", to: "/about" },
+  { label: "Home", to: "/" },
   { label: "Our Courses", to: "/course/search?query" },
-  { label: "Careers", to: "/careers" },
+  { label: "About Us", to: "/about" },
   { label: "Contact Us", to: "/contact" },
 ];
 

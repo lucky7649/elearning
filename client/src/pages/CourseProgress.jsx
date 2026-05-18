@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ReactPlayer from "react-player";
 import { useGetCourseProgressQuery, useSubmitQuizMutation } from "@/api/courseProgressApi";
+import { useSendHeartbeatMutation } from "@/api/courseApi";
 import { Button } from "@/components/ui/button";
 import {
   ArrowLeft, FileText, Download, PlayCircle,
@@ -9,12 +10,38 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
+const getDownloadUrl = (url) => {
+  if (!url) return "";
+  // Force download flag for Cloudinary files
+  if (url.includes("cloudinary.com") && url.includes("/upload/")) {
+    return url.replace("/upload/", "/upload/fl_attachment/");
+  }
+  return url;
+};
+
 const CourseProgress = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
 
   const { data: progressData, isLoading, refetch: refetchProgress } = useGetCourseProgressQuery(courseId);
   const [submitQuiz, { isLoading: isSubmitting }] = useSubmitQuizMutation();
+  const [sendHeartbeat] = useSendHeartbeatMutation();
+
+  useEffect(() => {
+    if (!courseId) return;
+
+    // Send initial heartbeat
+    sendHeartbeat(courseId).catch(() => {});
+
+    // Send heartbeat every 10 seconds
+    const timer = setInterval(() => {
+      sendHeartbeat(courseId).catch(() => {});
+    }, 10000);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, [courseId, sendHeartbeat]);
 
   const course = progressData?.data?.courseDetails;
   const progress = progressData?.data?.progress || [];
@@ -165,7 +192,7 @@ const CourseProgress = () => {
               </div>
               <p className="text-muted-foreground text-xs">Supplementary notes for this lecture.</p>
               <Button asChild variant="outline" size="sm" className="w-full flex items-center gap-2">
-                <a href={lecture.notes.fileUrl} target="_blank" rel="noreferrer">
+                <a href={getDownloadUrl(lecture.notes.fileUrl)} download target="_blank" rel="noreferrer">
                   <Download size={14} /> Download PDF
                 </a>
               </Button>
@@ -179,7 +206,7 @@ const CourseProgress = () => {
               </div>
               <p className="text-muted-foreground text-xs line-clamp-2">{lecture?.assignment?.description || "Complete the assignment for this module."}</p>
               <Button asChild variant="default" size="sm" className="w-full flex items-center gap-2">
-                <a href={lecture.assignment.fileUrl} target="_blank" rel="noreferrer">
+                <a href={getDownloadUrl(lecture.assignment.fileUrl)} download target="_blank" rel="noreferrer">
                   <Download size={14} /> Get Assignment
                 </a>
               </Button>

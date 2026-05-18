@@ -14,6 +14,7 @@ import {
   searchCourse,
   togglePublishCourse,
   generateQuiz,
+  updateHeartbeat,
 } from "../controllers/course.controller.js";
 
 import isAuthenticated from "../middlewares/auth.js";
@@ -42,6 +43,9 @@ router.get("/", getAllCourses);
 
 // Search courses
 router.get("/search", isAuthenticated, searchCourse);
+
+// Heartbeat for live watching
+router.post("/:courseId/heartbeat", isAuthenticated, updateHeartbeat);
 
 // Get single course
 router.get("/:courseId", isAuthenticated, getSingleCourse);

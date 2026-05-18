@@ -85,6 +85,13 @@ export const courseApi = createApi({
   ],
 }),
 
+    sendHeartbeat: builder.mutation({
+      query: (courseId) => ({
+        url: `/${courseId}/heartbeat`,
+        method: "POST",
+      }),
+    }),
+
 
     /* ---------------- SEARCH ---------------- */
 
@@ -178,4 +185,5 @@ export const {
   useRemoveLectureMutation,
   usePublishCourseMutation,
   useGenerateQuizMutation,
+  useSendHeartbeatMutation,
 } = courseApi;

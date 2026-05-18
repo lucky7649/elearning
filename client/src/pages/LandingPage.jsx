@@ -348,37 +348,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* 11. PRICING PLANS */}
-      <section className="py-24 px-6 bg-muted/30">
-        <div className="max-w-7xl mx-auto text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Choose Your Plan</h2>
-          <p className="text-muted-foreground">Get unlimited access to everything we offer.</p>
-        </div>
-        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[
-            { name: 'Free', price: '₹0', feat: ['Access to free courses', 'Community support', 'Basic resources'], btn: 'Get Started' },
-            { name: 'Pro', price: '₹4,999', feat: ['Unlimited access', 'Verified certificates', 'Premium projects', 'Live mentorship'], btn: 'Upgrade Now', popular: true },
-            { name: 'Premium', price: '₹9,999', feat: ['Everything in Pro', 'One-on-one calls', 'Job placement help', 'Offline downloads'], btn: 'Go Premium' },
-          ].map((plan) => (
-            <div key={plan.name} className={`relative p-8 rounded-3xl border bg-card flex flex-col gap-8 ${plan.popular ? 'border-primary shadow-2xl scale-105 z-10' : 'border-border'}`}>
-              {plan.popular && <span className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-bold px-4 py-1 rounded-full uppercase">Most Popular</span>}
-              <div className="text-center">
-                <h3 className="font-bold text-xl mb-2">{plan.name}</h3>
-                <h2 className="text-4xl font-extrabold">{plan.price}</h2>
-                <p className="text-xs text-muted-foreground mt-1">One-time payment</p>
-              </div>
-              <ul className="space-y-4 flex-grow">
-                {plan.feat.map((f) => (
-                  <li key={f} className="text-sm flex items-center gap-2 text-muted-foreground">
-                    <CheckCircle size={16} className="text-primary" /> {f}
-                  </li>
-                ))}
-              </ul>
-              <Button variant={plan.popular ? 'default' : 'outline'} className="rounded-full w-full py-6 font-bold">{plan.btn}</Button>
-            </div>
-          ))}
-        </div>
-      </section>
+
 
       {/* 12. FAQ SECTION */}
       <section className="py-24 px-6">
@@ -406,19 +376,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* 13. CTA BANNER */}
-      <section className="pt-20 pb-0 px-6 bg-background dark:bg-[#0f0c29] transition-colors duration-300">
-        <div className="max-w-7xl mx-auto rounded-t-[3rem] rounded-b-none bg-gradient-to-r from-purple-600 to-indigo-700 p-12 md:p-24 text-center text-white relative overflow-hidden shadow-2xl">
-          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
-          <div className="relative z-10 space-y-8">
-            <h2 className="text-4xl md:text-6xl font-extrabold leading-tight">Start Your Learning Journey Today 🚀</h2>
-            <p className="text-purple-100 text-lg md:text-xl max-w-2xl mx-auto">
-              Join thousands of students and start mastering new skills with the world's best instructors.
-            </p>
-            <Button size="lg" onClick={() => navigate('/login')} className="rounded-full bg-white text-purple-700 hover:bg-gray-100 px-12 py-8 text-xl font-bold shadow-2xl hover:scale-105 transition-transform">Enroll Now</Button>
-          </div>
-        </div>
-      </section>
+
     </div>
   );
 };

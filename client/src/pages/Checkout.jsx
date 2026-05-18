@@ -1,24 +1,34 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { usePurchaseCourseMutation, useGetCourseDetailsWithStatusQuery } from "@/api/purchaseApi";
+import { useGetCourseDetailsWithStatusQuery, useCreateRazorpayOrderMutation, useVerifyRazorpayPaymentMutation } from "@/api/purchaseApi";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2 } from "lucide-react";
+import { Loader2, CreditCard, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
+
+const loadRazorpayScript = () => {
+  return new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
 
 const Checkout = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
   const { data, isLoading: isLoadingCourse } = useGetCourseDetailsWithStatusQuery(courseId);
-  const [purchaseCourse, { isLoading }] = usePurchaseCourseMutation();
+  const [createRazorpayOrder, { isLoading: isCreatingOrder }] = useCreateRazorpayOrderMutation();
+  const [verifyRazorpayPayment, { isLoading: isVerifyingPayment }] = useVerifyRazorpayPaymentMutation();
 
   const [formData, setFormData] = useState({
     name: "",
-    cardNumber: "",
-    expiry: "",
-    cvc: "",
+    email: "",
+    phone: "",
   });
 
   const handleChange = (e) => {
@@ -28,18 +38,76 @@ const Checkout = () => {
 
   const handleCheckout = async (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.cardNumber || !formData.expiry || !formData.cvc) {
-      toast.error("Please fill in all payment details");
+    if (!formData.name || !formData.email || !formData.phone) {
+      toast.error("Please fill in all contact details");
+      return;
+    }
+
+    // 1. Load Razorpay checkout script
+    const isLoaded = await loadRazorpayScript();
+    if (!isLoaded) {
+      toast.error("Failed to load Razorpay SDK. Check your internet connection.");
       return;
     }
 
     try {
-      // Calling the backend to mock the payment and save purchase
-      await purchaseCourse({ courseId }).unwrap();
-      toast.success("Payment successful! Redirecting to course...");
-      navigate(`/course-progress/${courseId}`);
+      // 2. Create Order in Backend
+      const orderResponse = await createRazorpayOrder({ courseId }).unwrap();
+      if (!orderResponse?.success) {
+        toast.error("Failed to initiate payment");
+        return;
+      }
+
+      const { order, keyId } = orderResponse;
+
+      // 3. Configure Razorpay modal options
+      const options = {
+        key: keyId,
+        amount: order.amount,
+        currency: order.currency,
+        name: "E-Learning Platform",
+        description: `Purchase Course: ${data.course.courseTitle}`,
+        image: data.course.courseThumbnail || "https://res.cloudinary.com/dj75vhwsj/image/upload/v1778775671/j65po1aurjirhkssmsyf.pdf", // Use logo or course thumbnail
+        order_id: order.id,
+        handler: async (response) => {
+          // 4. Verify Payment in Backend
+          const verifyPayload = {
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+            courseId,
+          };
+
+          try {
+            const verificationResult = await verifyRazorpayPayment(verifyPayload).unwrap();
+            if (verificationResult.success) {
+              toast.success("Payment verified! Course unlocked successfully.");
+              navigate(`/course-progress/${courseId}`);
+            } else {
+              toast.error(verificationResult.message || "Payment verification failed.");
+            }
+          } catch (verifyError) {
+            toast.error("Verification failed. Please contact support.");
+          }
+        },
+        prefill: {
+          name: formData.name,
+          email: formData.email,
+          contact: formData.phone,
+        },
+        notes: {
+          courseId: courseId,
+        },
+        theme: {
+          color: "#a855f7", // Premium purple brand color
+        },
+      };
+
+      const razorpayModal = new window.Razorpay(options);
+      razorpayModal.open();
+
     } catch (err) {
-      toast.error(err?.data?.message || "Payment failed");
+      toast.error(err?.data?.message || "Order creation failed.");
     }
   };
 
@@ -56,89 +124,99 @@ const Checkout = () => {
   }
 
   const course = data.course;
+  const isProcessing = isCreatingOrder || isVerifyingPayment;
 
   return (
     <div className="container mx-auto p-4 flex justify-center items-center min-h-[calc(100vh-80px)]">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Mock Checkout</CardTitle>
-          <CardDescription>
-            Complete your purchase for <b>{course.courseTitle}</b>. This is a simulated payment gateway.
+      <Card className="w-full max-w-md border-border shadow-xl rounded-3xl overflow-hidden">
+        <CardHeader className="bg-muted/10 border-b border-border pb-6">
+          <CardTitle className="text-2xl font-bold flex items-center gap-2">
+            <CreditCard className="text-primary" size={24} /> Secure Checkout
+          </CardTitle>
+          <CardDescription className="text-sm font-medium mt-1">
+            Unlock complete access to <b>{course.courseTitle}</b>.
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleCheckout} className="space-y-4">
+        <CardContent className="pt-6 space-y-4">
+          
+          {/* COURSE CARD PREVIEW */}
+          <div className="flex items-center gap-4 bg-muted/20 border border-border p-3.5 rounded-2xl">
+            <img 
+              src={course.courseThumbnail} 
+              alt={course.courseTitle} 
+              className="w-16 h-16 rounded-xl object-cover border border-border"
+            />
+            <div className="min-w-0 flex-1">
+              <h4 className="font-bold text-sm truncate">{course.courseTitle}</h4>
+              <p className="text-xs text-muted-foreground mt-0.5 truncate">By {course.creator?.name || "Instructor"}</p>
+              <span className="inline-block bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded-full mt-1.5 border border-primary/10">Premium Course</span>
+            </div>
+          </div>
+
+          <form onSubmit={handleCheckout} className="space-y-4 pt-2">
             <div className="space-y-2">
-              <Label htmlFor="name">Name on Card</Label>
+              <Label htmlFor="name" className="text-sm font-semibold">Your Name</Label>
               <Input
                 id="name"
                 name="name"
-                placeholder="John Doe"
+                placeholder="Enter your full name"
                 value={formData.name}
                 onChange={handleChange}
+                className="rounded-xl h-11"
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="cardNumber">Card Number</Label>
+              <Label htmlFor="email" className="text-sm font-semibold">Email Address</Label>
               <Input
-                id="cardNumber"
-                name="cardNumber"
-                placeholder="1234 5678 9101 1121"
-                value={formData.cardNumber}
+                id="email"
+                name="email"
+                type="email"
+                placeholder="you@example.com"
+                value={formData.email}
                 onChange={handleChange}
-                maxLength={16}
+                className="rounded-xl h-11"
                 required
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="expiry">Expiry Date</Label>
-                <Input
-                  id="expiry"
-                  name="expiry"
-                  placeholder="MM/YY"
-                  value={formData.expiry}
-                  onChange={handleChange}
-                  maxLength={5}
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="cvc">CVC</Label>
-                <Input
-                  id="cvc"
-                  name="cvc"
-                  placeholder="123"
-                  value={formData.cvc}
-                  onChange={handleChange}
-                  maxLength={3}
-                  type="password"
-                  required
-                />
-              </div>
+            <div className="space-y-2">
+              <Label htmlFor="phone" className="text-sm font-semibold">Phone Number</Label>
+              <Input
+                id="phone"
+                name="phone"
+                placeholder="9876543210"
+                value={formData.phone}
+                onChange={handleChange}
+                className="rounded-xl h-11"
+                required
+              />
             </div>
           </form>
-          <div className="mt-6 p-4 bg-gray-100 dark:bg-gray-800 rounded-md">
-            <div className="flex justify-between font-bold text-lg">
-              <span>Total Amount:</span>
-              <span>₹{course.coursePrice}</span>
+
+          <div className="p-4 bg-muted/30 border border-border rounded-2xl flex items-center justify-between mt-6">
+            <div className="space-y-0.5">
+              <p className="text-xs text-muted-foreground font-semibold">Amount to Pay</p>
+              <p className="text-2xl font-black text-foreground">₹{course.coursePrice}</p>
+            </div>
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground bg-background border border-border px-3 py-1.5 rounded-full font-semibold">
+              <ShieldCheck className="text-green-500" size={14} /> Secured by Razorpay
             </div>
           </div>
+
         </CardContent>
-        <CardFooter>
+        <CardFooter className="pb-6">
           <Button
-            className="w-full"
+            className="w-full font-bold text-base h-13 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white shadow-lg shadow-purple-500/10"
             onClick={handleCheckout}
-            disabled={isLoading}
+            disabled={isProcessing}
           >
-            {isLoading ? (
+            {isProcessing ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Processing...
+                Initiating Secure Payment...
               </>
             ) : (
-              `Pay ₹${course.coursePrice}`
+              `Pay Now ₹${course.coursePrice}`
             )}
           </Button>
         </CardFooter>
